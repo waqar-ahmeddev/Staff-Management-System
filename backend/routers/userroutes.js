@@ -6,7 +6,7 @@ import {
   logoutUser,
 } from "../Controllers/UserControllers.js";
 
-import authMiddleware from "../middleware/authmiddleware.js";
+import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -18,11 +18,9 @@ router.post("/register", registerUser);
 // Login
 router.post("/login", loginUser);
 
-
 // ================= AUTHENTICATED ROUTES =================
 
 // Logout
 router.post("/logout", authMiddleware, logoutUser);
-
 
 export default router;
