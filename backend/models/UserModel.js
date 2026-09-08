@@ -34,16 +34,15 @@ const userSchema = new mongoose.Schema(
 );
 
 // 🔒 Password Hash karne ke liye Pre-Save Middleware Hook
-userSchema.pre("save", async function (next) {
-  // Agar password modify nahi hua (jaise profile edit par), toh isey dobara hash na karein
+userSchema.pre("save", async function () {
+  // Agar password modify nahi hua, toh aage skip karein
   if (!this.isModified("password")) {
-    return next();
+    return;
   }
 
   // Salt generate karein aur password hash karein
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
-  next();
 });
 
 // 🔑 Login ke waqt password compare karne ke liye Helper Method
