@@ -6,6 +6,7 @@ import ConnectDb from "./utils/db.js";
 dotenv.config();
 import userRoutes from "./routers/userroutes.js";
 import AdminRoutes from "./routers/Adminroutes.js";
+import AttendanceRoutes from "./routers/Attendanceroutes.js";
 ConnectDb();
 
 const port = process.env.PORT || 5000;
@@ -19,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 // Use the user routes
 app.use("/api/users", userRoutes);
 app.use("/api/admin", AdminRoutes);
-
+app.use("/api/attendance", AttendanceRoutes);
 // CORS configuration (React app front-end URL)
 app.use(
   cors({

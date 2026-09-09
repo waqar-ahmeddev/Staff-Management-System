@@ -21,6 +21,10 @@ const attendanceSchema = new mongoose.Schema(
     checkOut: {
       type: Date,
     },
+    reason:{
+      type: String,
+      required: false,
+    }
   },
   { timestamps: true },
 );
