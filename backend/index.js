@@ -10,6 +10,7 @@ import AttendanceRoutes from "./routers/Attendanceroutes.js";
 import LeaveRoutes from "./routers/leaveroutes.js";
 import NotificationRoutes from "./routers/Notificationroutes.js";
 import TaskRoutes from "./routers/Taskroutes.js"; // Import Task routes
+import AutomatedPayrollRoutes from "./routers/Automatedroutes.js"; // Import Automated Payroll routes
 ConnectDb();
 
 const port = process.env.PORT || 5000;
@@ -27,6 +28,7 @@ app.use("/api/attendance", AttendanceRoutes);
 app.use("/api/leave", LeaveRoutes);
 app.use("/api/notifications", NotificationRoutes);
 app.use("/api/tasks", TaskRoutes); // Use Task routes
+app.use("/api/payroll", AutomatedPayrollRoutes); // Use Automated Payroll routes
 // CORS configuration (React app front-end URL)
 app.use(
   cors({
