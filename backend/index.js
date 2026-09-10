@@ -8,6 +8,7 @@ import userRoutes from "./routers/userroutes.js";
 import AdminRoutes from "./routers/Adminroutes.js";
 import AttendanceRoutes from "./routers/Attendanceroutes.js";
 import LeaveRoutes from "./routers/leaveroutes.js";
+import NotificationRoutes from "./routers/Notificationroutes.js";
 ConnectDb();
 
 const port = process.env.PORT || 5000;
@@ -23,6 +24,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/admin", AdminRoutes);
 app.use("/api/attendance", AttendanceRoutes);
 app.use("/api/leave", LeaveRoutes);
+app.use("/api/notifications", NotificationRoutes);
 // CORS configuration (React app front-end URL)
 app.use(
   cors({
