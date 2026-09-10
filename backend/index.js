@@ -1,4 +1,4 @@
-import express from "express";
+import express, { application } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -9,6 +9,7 @@ import AdminRoutes from "./routers/Adminroutes.js";
 import AttendanceRoutes from "./routers/Attendanceroutes.js";
 import LeaveRoutes from "./routers/leaveroutes.js";
 import NotificationRoutes from "./routers/Notificationroutes.js";
+import TaskRoutes from "./routers/Taskroutes.js"; // Import Task routes
 ConnectDb();
 
 const port = process.env.PORT || 5000;
@@ -25,6 +26,7 @@ app.use("/api/admin", AdminRoutes);
 app.use("/api/attendance", AttendanceRoutes);
 app.use("/api/leave", LeaveRoutes);
 app.use("/api/notifications", NotificationRoutes);
+app.use("/api/tasks", TaskRoutes); // Use Task routes
 // CORS configuration (React app front-end URL)
 app.use(
   cors({

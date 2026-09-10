@@ -68,6 +68,69 @@ const registerUser = async (req, res) => {
 
 // ================= LOGIN =================
 
+// const loginUser = async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
+
+//     // Check fields
+//     if (!email || !password) {
+//       return res.status(400).json({
+//         message: "Please fill all the fields",
+//       });
+//     }
+
+//     // Find user
+//     const existingUser = await userModel.findOne({ email });
+
+//     if (!existingUser) {
+//       return res.status(401).json({
+//         message: "Invalid email or password",
+//       });
+//     }
+
+//     // Compare password
+//     // Model ke matchPassword method ko use karega
+//     const isMatch = await existingUser.matchPassword(password);
+
+//     if (!isMatch) {
+//       return res.status(401).json({
+//         message: "Invalid email or password",
+//       });
+//     }
+
+//     // Generate JWT token
+//     const token = generateToken(existingUser._id);
+
+//     // Store token in HTTP-only cookie
+//     res.cookie("token", token, {
+//       httpOnly: true,
+//       secure: process.env.NODE_ENV === "production",
+//       sameSite: "strict",
+//       maxAge: 7 * 24 * 60 * 60 * 1000,
+//     });
+
+//     return res.status(200).json({
+//       message: "User logged in successfully",
+
+//       user: {
+//         id: existingUser._id,
+//         name: existingUser.name,
+//         email: existingUser.email,
+//         department: existingUser.department,
+//         position: existingUser.position,
+//         role: existingUser.role,
+//       },
+//     });
+//   } catch (error) {
+//     console.log(error);
+
+//     return res.status(500).json({
+//       message: "Server error",
+//     });
+//   }
+// };
+// ================= LOGIN =================
+
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -89,7 +152,6 @@ const loginUser = async (req, res) => {
     }
 
     // Compare password
-    // Model ke matchPassword method ko use karega
     const isMatch = await existingUser.matchPassword(password);
 
     if (!isMatch) {
@@ -109,9 +171,10 @@ const loginUser = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
+    // Send response WITH TOKEN IN JSON BODY
     return res.status(200).json({
       message: "User logged in successfully",
-
+      token, // <--- YAHAN TOKEN ADD KAR DIYA HAI
       user: {
         id: existingUser._id,
         name: existingUser.name,
