@@ -1,0 +1,253 @@
+{
+	"info": {
+		"_postman_id": "staff-management-system-complete-v1",
+		"name": "Staff Management System - Complete API Collection",
+		"description": "Master Postman collection including Auth (Register, Login, Logout), Tasks (CRUD), and Automated Payroll System.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Authentication",
+			"item": [
+				{
+					"name": "Register User (Staff)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Waqar Ahmed\",\n  \"email\": \"waqar@example.com\",\n  \"password\": \"password123\",\n  \"department\": \"Engineering\",\n  \"position\": \"Software Engineer\"\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/users/register",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "users", "register"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User / Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"waqar@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/users/login",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "users", "login"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/users/logout",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "users", "logout"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Task Management",
+			"item": [
+				{
+					"name": "Create Task (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{ "key": "token", "value": "{{TOKEN}}", "type": "string" }]
+						},
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Fix Authentication Bug\",\n  \"description\": \"JWT token expiration issue needs to be handled on client side.\",\n  \"assignedTo\": \"6aa17a6151b7e645fcdb6858\",\n  \"deadline\": \"2026-09-20\",\n  \"priority\": \"high\"\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/tasks",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "tasks"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Tasks (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{ "key": "token", "value": "{{TOKEN}}", "type": "string" }]
+						},
+						"method": "GET",
+						"url": {
+							"raw": "{{BASE_URL}}/api/tasks",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "tasks"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Tasks (Staff)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{ "key": "token", "value": "{{TOKEN}}", "type": "string" }]
+						},
+						"method": "GET",
+						"url": {
+							"raw": "{{BASE_URL}}/api/tasks/my-tasks",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "tasks", "my-tasks"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Task Status (Staff)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{ "key": "token", "value": "{{TOKEN}}", "type": "string" }]
+						},
+						"method": "PUT",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"in-progress\"\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/tasks/:taskId/status",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "tasks", ":taskId", "status"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Task (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{ "key": "token", "value": "{{TOKEN}}", "type": "string" }]
+						},
+						"method": "DELETE",
+						"url": {
+							"raw": "{{BASE_URL}}/api/tasks/:taskId",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "tasks", ":taskId"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Automated Payroll",
+			"item": [
+				{
+					"name": "Generate Payroll (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{ "key": "token", "value": "{{TOKEN}}", "type": "string" }]
+						},
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"employeeId\": \"6aa17a6151b7e645fcdb6858\",\n  \"month\": \"September\",\n  \"year\": 2026,\n  \"baseSalary\": 80000,\n  \"allowances\": {\n    \"medical\": 5000,\n    \"conveyance\": 3000,\n    \"other\": 2000\n  },\n  \"deductions\": {\n    \"tax\": 4000,\n    \"unpaidLeaves\": 1000,\n    \"other\": 0\n  }\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/payroll/generate",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "payroll", "generate"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Payrolls (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{ "key": "token", "value": "{{TOKEN}}", "type": "string" }]
+						},
+						"method": "GET",
+						"url": {
+							"raw": "{{BASE_URL}}/api/payroll/all",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "payroll", "all"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Payslips (Staff)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{ "key": "token", "value": "{{TOKEN}}", "type": "string" }]
+						},
+						"method": "GET",
+						"url": {
+							"raw": "{{BASE_URL}}/api/payroll/my-payslips",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "payroll", "my-payslips"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mark Payroll as Paid (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{ "key": "token", "value": "{{TOKEN}}", "type": "string" }]
+						},
+						"method": "PUT",
+						"url": {
+							"raw": "{{BASE_URL}}/api/payroll/:payrollId/pay",
+							"host": ["{{BASE_URL}}"],
+							"path": ["api", "payroll", ":payrollId", "pay"]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "BASE_URL",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "TOKEN",
+			"value": "paste_jwt_token_here",
+			"type": "string"
+		}
+	]
+}
