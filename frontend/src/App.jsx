@@ -1,16 +1,72 @@
-import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "./features/auth/authSlice";
 
-export default function App() {
-  return (
-    <div className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-6">
-      <div className="max-w-md w-full bg-slate-800 border border-slate-700 rounded-2xl p-8 shadow-2xl text-center space-y-6">
-        <h1 className="text-3xl font-extrabold tracking-tight bg-linear-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
-          Frontend Restored!
-        </h1>
-        <p className="text-slate-400 text-sm">
-          Aapka src folder successfully restore ho gaya hai aur Tailwind CSS working condition mein hai.
-        </p>
-      </div>
+import Navbar from "./components/Navbar";
+import Sidebar from "./components/sidebar";
+import Login from "./pages/Login";
+import AdminDashboard from "./pages/AdminDashboard";
+import StaffDashboard from "./pages/StaffDashboard";
+import Tasks from "./pages/Task";
+import Payroll from "./pages/payroll";
+
+// Protected Route Guard Component
+const ProtectedRoute = ({ allowedRoles }) => {
+  const user = useSelector(selectCurrentUser);
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(user?.role)) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <Outlet />;
+};
+
+// Main Dashboard Layout with Sidebar & Navbar
+const MainLayout = () => (
+  <div className="min-h-screen bg-gray-50">
+    <Navbar />
+    <div className="flex">
+      <Sidebar />
+      <main className="flex-1 p-6">
+        <Outlet />
+      </main>
     </div>
+  </div>
+);
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+
+        {/* Protected Dashboard Wrapper */}
+        <Route element={<ProtectedRoute allowedRoles={["admin", "staff"]} />}>
+          <Route element={<MainLayout />}>
+            {/* Admin Routes */}
+            <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            </Route>
+
+            {/* Staff Routes */}
+            <Route element={<ProtectedRoute allowedRoles={["staff"]} />}>
+              <Route path="/staff/dashboard" element={<StaffDashboard />} />
+            </Route>
+
+            {/* Shared Routes */}
+            <Route path="/tasks" element={<Tasks />} />
+            <Route path="/payroll" element={<Payroll />} />
+          </Route>
+        </Route>
+
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </Router>
   );
 }
+
+export default App;
