@@ -1,72 +1,135 @@
-import userModel from "../models/UserModel.js";
-import jwt from "jsonwebtoken";
+// import userModel from "../models/UserModel.js";
+// import jwt from "jsonwebtoken";
 
-// Generate JWT Token
-const generateToken = (userId) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE || "7d",
-  });
-};
+// // Generate JWT Token
+// const generateToken = (userId) => {
+//   return jwt.sign({ userId }, process.env.JWT_SECRET, {
+//     expiresIn: process.env.JWT_EXPIRE || "7d",
+//   });
+// };
 
-// ================= REGISTER =================
+// // ================= REGISTER =================
 
-const registerUser = async (req, res) => {
-  try {
-    const { name, email, password, department, position } = req.body;
+// const registerUser = async (req, res) => {
+//   try {
+//     const { name, email, password, department, position } = req.body;
 
-    // Check all fields
-    if (!name || !email || !password || !department || !position) {
-      return res.status(400).json({
-        message: "Please fill all the fields",
-      });
-    }
+//     // Check all fields
+//     if (!name || !email || !password || !department || !position) {
+//       return res.status(400).json({
+//         message: "Please fill all the fields",
+//       });
+//     }
 
-    // Check if user already exists
-    const existingUser = await userModel.findOne({ email });
+//     // Check if user already exists
+//     const existingUser = await userModel.findOne({ email });
 
-    if (existingUser) {
-      return res.status(400).json({
-        message: "User already exists",
-      });
-    }
+//     if (existingUser) {
+//       return res.status(400).json({
+//         message: "User already exists",
+//       });
+//     }
 
-    // Create user
-    const newUser = new userModel({
-      name,
-      email,
-      password,
-      department,
-      position,
+//     // Create user
+//     const newUser = new userModel({
+//       name,
+//       email,
+//       password,
+//       department,
+//       position,
 
-      // role frontend se nahi aa raha
-      // Model ka default "staff" automatically hoga
-    });
+//       // role frontend se nahi aa raha
+//       // Model ka default "staff" automatically hoga
+//     });
 
-    // Save user
-    // Password pre-save hook ki wajah se hash hoga
-    await newUser.save();
+//     // Save user
+//     // Password pre-save hook ki wajah se hash hoga
+//     await newUser.save();
 
-    return res.status(201).json({
-      message: "User registered successfully",
-      user: {
-        id: newUser._id,
-        name: newUser.name,
-        email: newUser.email,
-        department: newUser.department,
-        position: newUser.position,
-        role: newUser.role,
-      },
-    });
-  } catch (error) {
-    console.log(error);
+//     return res.status(201).json({
+//       message: "User registered successfully",
+//       user: {
+//         id: newUser._id,
+//         name: newUser.name,
+//         email: newUser.email,
+//         department: newUser.department,
+//         position: newUser.position,
+//         role: newUser.role,
+//       },
+//     });
+//   } catch (error) {
+//     console.log(error);
 
-    return res.status(500).json({
-      message: "Server error",
-    });
-  }
-};
+//     return res.status(500).json({
+//       message: "Server error",
+//     });
+//   }
+// };
 
-// ================= LOGIN =================
+// // ================= LOGIN =================
+
+// // const loginUser = async (req, res) => {
+// //   try {
+// //     const { email, password } = req.body;
+
+// //     // Check fields
+// //     if (!email || !password) {
+// //       return res.status(400).json({
+// //         message: "Please fill all the fields",
+// //       });
+// //     }
+
+// //     // Find user
+// //     const existingUser = await userModel.findOne({ email });
+
+// //     if (!existingUser) {
+// //       return res.status(401).json({
+// //         message: "Invalid email or password",
+// //       });
+// //     }
+
+// //     // Compare password
+// //     // Model ke matchPassword method ko use karega
+// //     const isMatch = await existingUser.matchPassword(password);
+
+// //     if (!isMatch) {
+// //       return res.status(401).json({
+// //         message: "Invalid email or password",
+// //       });
+// //     }
+
+// //     // Generate JWT token
+// //     const token = generateToken(existingUser._id);
+
+// //     // Store token in HTTP-only cookie
+// //     res.cookie("token", token, {
+// //       httpOnly: true,
+// //       secure: process.env.NODE_ENV === "production",
+// //       sameSite: "strict",
+// //       maxAge: 7 * 24 * 60 * 60 * 1000,
+// //     });
+
+// //     return res.status(200).json({
+// //       message: "User logged in successfully",
+
+// //       user: {
+// //         id: existingUser._id,
+// //         name: existingUser.name,
+// //         email: existingUser.email,
+// //         department: existingUser.department,
+// //         position: existingUser.position,
+// //         role: existingUser.role,
+// //       },
+// //     });
+// //   } catch (error) {
+// //     console.log(error);
+
+// //     return res.status(500).json({
+// //       message: "Server error",
+// //     });
+// //   }
+// // };
+// // ================= LOGIN =================
 
 // const loginUser = async (req, res) => {
 //   try {
@@ -89,7 +152,6 @@ const registerUser = async (req, res) => {
 //     }
 
 //     // Compare password
-//     // Model ke matchPassword method ko use karega
 //     const isMatch = await existingUser.matchPassword(password);
 
 //     if (!isMatch) {
@@ -109,9 +171,10 @@ const registerUser = async (req, res) => {
 //       maxAge: 7 * 24 * 60 * 60 * 1000,
 //     });
 
+//     // Send response WITH TOKEN IN JSON BODY
 //     return res.status(200).json({
 //       message: "User logged in successfully",
-
+//       token, // <--- YAHAN TOKEN ADD KAR DIYA HAI
 //       user: {
 //         id: existingUser._id,
 //         name: existingUser.name,
@@ -129,6 +192,101 @@ const registerUser = async (req, res) => {
 //     });
 //   }
 // };
+
+// // ================= LOGOUT =================
+
+// const logoutUser = async (req, res) => {
+//   try {
+//     // Remove JWT cookie
+//     res.clearCookie("token", {
+//       httpOnly: true,
+//       secure: process.env.NODE_ENV === "production",
+//       sameSite: "strict",
+//     });
+
+//     return res.status(200).json({
+//       message: "User logged out successfully",
+//     });
+//   } catch (error) {
+//     console.log(error);
+
+//     return res.status(500).json({
+//       message: "Server error",
+//     });
+//   }
+// };
+
+// // ================= EXPORT =================
+
+// export { registerUser, loginUser, logoutUser };
+import userModel from "../models/UserModel.js";
+import jwt from "jsonwebtoken";
+
+// Generate JWT Token (userId aur role dono payload mein add kiye hain)
+const generateToken = (userId, role) => {
+  return jwt.sign({ id: userId, role }, process.env.JWT_SECRET || "default_secret_key", {
+    expiresIn: process.env.JWT_EXPIRE || "7d",
+  });
+};
+
+// ================= REGISTER =================
+
+const registerUser = async (req, res) => {
+  try {
+    const { name, email, password, department, position } = req.body;
+
+    // Check all fields
+    if (!name || !email || !password || !department || !position) {
+      return res.status(400).json({
+        message: "Please fill all the fields",
+      });
+    }
+
+    // Lowercase email for consistency
+    const cleanEmail = email.toLowerCase().trim();
+
+    // Check if user already exists
+    const existingUser = await userModel.findOne({ email: cleanEmail });
+
+    if (existingUser) {
+      return res.status(400).json({
+        message: "User already exists",
+      });
+    }
+
+    // Create user
+    const newUser = new userModel({
+      name,
+      email: cleanEmail,
+      password,
+      department,
+      position,
+      // Default role automatically "staff" set hoga schema ke mutabiq
+    });
+
+    // Save user (Password pre-save hook hash karega)
+    await newUser.save();
+
+    return res.status(201).json({
+      message: "User registered successfully",
+      user: {
+        _id: newUser._id,
+        id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        department: newUser.department,
+        position: newUser.position,
+        role: newUser.role,
+      },
+    });
+  } catch (error) {
+    console.error("Register Error:", error);
+    return res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+
 // ================= LOGIN =================
 
 const loginUser = async (req, res) => {
@@ -142,8 +300,9 @@ const loginUser = async (req, res) => {
       });
     }
 
-    // Find user
-    const existingUser = await userModel.findOne({ email });
+    // Case-insensitive email check
+    const cleanEmail = email.toLowerCase().trim();
+    const existingUser = await userModel.findOne({ email: cleanEmail });
 
     if (!existingUser) {
       return res.status(401).json({
@@ -151,7 +310,7 @@ const loginUser = async (req, res) => {
       });
     }
 
-    // Compare password
+    // Compare password (UserModel matchPassword method)
     const isMatch = await existingUser.matchPassword(password);
 
     if (!isMatch) {
@@ -161,7 +320,7 @@ const loginUser = async (req, res) => {
     }
 
     // Generate JWT token
-    const token = generateToken(existingUser._id);
+    const token = generateToken(existingUser._id, existingUser.role);
 
     // Store token in HTTP-only cookie
     res.cookie("token", token, {
@@ -171,11 +330,12 @@ const loginUser = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    // Send response WITH TOKEN IN JSON BODY
+    // Send response with Token & Structured User data
     return res.status(200).json({
       message: "User logged in successfully",
-      token, // <--- YAHAN TOKEN ADD KAR DIYA HAI
+      token,
       user: {
+        _id: existingUser._id,
         id: existingUser._id,
         name: existingUser.name,
         email: existingUser.email,
@@ -185,7 +345,27 @@ const loginUser = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error);
+    console.error("Login Error:", error);
+    return res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+// ================= GET ALL STAFF =================
+
+const getAllStaff = async (req, res) => {
+  try {
+    const staff = await userModel
+      .find({ role: "staff" })
+      .select("-password")
+      .sort({ name: 1 });
+
+    return res.status(200).json({
+      message: "Staff retrieved successfully",
+      staff,
+    });
+  } catch (error) {
+    console.error("Get Staff Error:", error);
 
     return res.status(500).json({
       message: "Server error",
@@ -208,8 +388,7 @@ const logoutUser = async (req, res) => {
       message: "User logged out successfully",
     });
   } catch (error) {
-    console.log(error);
-
+    console.error("Logout Error:", error);
     return res.status(500).json({
       message: "Server error",
     });
@@ -218,4 +397,4 @@ const logoutUser = async (req, res) => {
 
 // ================= EXPORT =================
 
-export { registerUser, loginUser, logoutUser };
+export { registerUser, loginUser, logoutUser, getAllStaff };

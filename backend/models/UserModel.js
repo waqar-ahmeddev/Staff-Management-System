@@ -30,12 +30,12 @@ const userSchema = new mongoose.Schema(
       default: "staff",
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
-// 🔒 Password Hash karne ke liye Pre-Save Middleware Hook
+// 🔒 Password Hash karne ke liye Pre-Save Hook (Async Without 'next')
 userSchema.pre("save", async function () {
-  // Agar password modify nahi hua, toh aage skip karein
+  // Agar password modify nahi hua, toh skip karein
   if (!this.isModified("password")) {
     return;
   }
@@ -45,10 +45,10 @@ userSchema.pre("save", async function () {
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-// 🔑 Login ke waqt password compare karne ke liye Helper Method
+// 🔑 Password compare method
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.models.User || mongoose.model("User", userSchema);
 export default User;

@@ -5,40 +5,88 @@ import userModel from "./models/UserModel.js";
 // Load environment variables
 dotenv.config();
 
-const seedAdmin = async () => {
+const staffUsersData = [
+  {
+    name: "Ahmad Khan",
+    email: "ahmad@gmail.com",
+    password: "StaffPassword123!",
+    department: "Engineering",
+    position: "Frontend Developer",
+    role: "staff",
+  },
+  {
+    name: "Ali Raza",
+    email: "ali@gmail.com",
+    password: "StaffPassword123!",
+    department: "Engineering",
+    position: "Backend Developer",
+    role: "staff",
+  },
+  {
+    name: "Usman Tariq",
+    email: "usman@gmail.com",
+    password: "StaffPassword123!",
+    department: "HR",
+    position: "HR Executive",
+    role: "staff",
+  },
+  {
+    name: "Sara Ahmed",
+    email: "sara@gmail.com",
+    password: "StaffPassword123!",
+    department: "Finance",
+    position: "Accountant",
+    role: "staff",
+  },
+  {
+    name: "Hamza Malik",
+    email: "hamza@gmail.com",
+    password: "StaffPassword123!",
+    department: "Operations",
+    position: "Support Specialist",
+    role: "staff",
+  },
+];
+
+const seedDatabase = async () => {
   try {
-    // 1. Database Connect Karein
+    // 1. Connect DB
     await mongoose.connect(process.env.MONGO_URI);
-    console.log("Database Connected for Seeding...");
+    console.log("Database Connected for Seeding...\n");
 
-    // 2. Check Karein Agar Admin Pehle Se Exist Karta Hai
-    const adminExists = await userModel.findOne({ role: "admin" });
-
-    if (adminExists) {
-      console.log("⚠️ Admin user pehle se exist karta hai!");
-      process.exit();
+    // 2. Admin User Check / Create
+    const adminExists = await userModel.findOne({ email: "admin@gmail.com" });
+    if (!adminExists) {
+      await userModel.create({
+        name: "Super Admin",
+        email: "admin@gmail.com",
+        password: "AdminPassword123!",
+        department: "Management",
+        position: "System Administrator",
+        role: "admin",
+      });
+      console.log("✅ Admin Created -> Email: admin@gmail.com | Pass: AdminPassword123!");
+    } else {
+      console.log("⚠️ Admin (admin@gmail.com) pehle se exist karta hai.");
     }
 
-    // 3. New Admin Create Karein
-    const adminUser = new userModel({
-      name: "Super Admin",
-      email: "admin@gmail.com",
-      password: "AdminPassword123!", // UserModel ka pre-save hook isey khud hash kar dega
-      department: "Management",
-      position: "System Administrator",
-      role: "admin",
-    });
+    // 3. Loop through Staff Users
+    for (const staff of staffUsersData) {
+      const exists = await userModel.findOne({ email: staff.email });
+      if (!exists) {
+        await userModel.create(staff);
+        console.log(`✅ Staff Created -> ${staff.name} (${staff.email})`);
+      } else {
+        console.log(`⚠️ User (${staff.email}) pehle se exist karta hai.`);
+      }
+    }
 
-    await adminUser.save();
-    console.log("✅ Admin User Successfully Created!");
-    console.log("Email: admin@gmail.com");
-    console.log("Password: AdminPassword123!");
-
+    console.log("\n🎉 Seeding Finished Successfully!");
     process.exit();
   } catch (error) {
-    console.error("❌ Error while seeding admin:", error.message);
+    console.error("❌ Seeding Error:", error.message);
     process.exit(1);
   }
 };
 
-seedAdmin();
+seedDatabase();

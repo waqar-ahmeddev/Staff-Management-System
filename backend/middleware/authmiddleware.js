@@ -16,7 +16,9 @@ const authMiddleware = async (req, res, next) => {
       process.env.JWT_SECRET
     );
 
-    const user = await userModel.findById(decoded.userId)
+    // JWT mein "id" save ki gayi hai
+    // isliye yahan decoded.id use hoga
+    const user = await userModel.findById(decoded.id)
       .select("-password");
 
     if (!user) {
@@ -26,10 +28,11 @@ const authMiddleware = async (req, res, next) => {
     }
 
     req.user = user;
-
     next();
 
   } catch (error) {
+    console.error("Auth Middleware Error:", error);
+
     return res.status(401).json({
       message: "Invalid or expired token",
     });
